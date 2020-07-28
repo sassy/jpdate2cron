@@ -1,13 +1,59 @@
 import 'moment/locale/ja';
 import moment from 'moment';
+import { createCommand} from 'commander';
 
+const version = require("../package.json");
 
-function convertCron(date: string, time: string) : string {
-    const day = moment(date + " " + time).utc();
-    return day.format('m H D M *');
+function convertISODate(date?: string) {
+    if (date === undefined) {
+        return undefined;
+    }
+    const m1 = date.match(/^(\d\d\d\d)\/(\d+)\/(\d+)/);
+    if (m1) {
+        console.log(date);
+        return date.replace(/\//g, '-');
+    }
+    const m2 = date.match(/^(\d\d\d\d)\/(\d+)\/(\d+)/);
+    if (m2) {
+        return date;
+    }
+    return undefined;
 }
 
-if (process.argv.length > 3) {
-    const ret = convertCron(process.argv[2], process.argv[3]);
-    console.log(ret);
+function buildDayString(date?: string, time?: string): string {
+    if (date && time) {
+        return `${date} ${time}`
+    } else if (date) {
+        return date;
+    } else if (time) {
+        return `${moment().format('YYYY-MM-DD')} ${time}`;
+    } else {
+        return "";
+    }
 }
+
+export function convertCron(date?: string, time?: string) : string {
+    const dayString = buildDayString(date, time);
+    const utcString = moment(dayString).utc();
+    if (date && time) {
+        return utcString.format('m H D M *');
+    } else if (date) {
+        return utcString.format('* * D M *');
+    } else if (time) {
+        return utcString.format('m H * * *');
+    } else {
+        return '* * * * *';
+    } 
+     
+}
+
+const program = createCommand();
+program.version(version);
+program
+    .option('-d, --date <date>', 'specify date')
+    .option('-t, --time <time>', 'specify time');
+
+program.parse(process.argv);
+const ret = convertCron(convertISODate(program.date), program.time);
+console.log(ret);
+
