@@ -54,6 +54,7 @@ program
     .option('-t, --time <time>', 'specify time');
 
 program.parse(process.argv);
-const ret = convertCron(convertISODate(program.date), program.time);
+const options = program.opts();
+const ret = convertCron(convertISODate(options.date), options.time);
 console.log(ret);
 
