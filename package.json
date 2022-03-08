@@ -3,13 +3,18 @@
   "version": "1.0.0",
   "main": "src/main.js",
   "license": "MIT",
+  "bin": {
+    "jpdate2cron": "bin/jpdate2cron"
+  },
   "scripts": {
-    "start": "ts-node src/main.ts"
+    "start": "ts-node src/main.ts",
+    "build": "node ./scripts/build.js"
   },
   "dependencies": {
     "@types/moment": "^2.13.0",
     "@types/node": "^16.0.0",
     "commander": "^9.0.0",
+    "esbuild": "^0.14.25",
     "moment": "^2.27.0",
     "ts-node": "^10.0.0",
     "typescript": "^4.0.0"
