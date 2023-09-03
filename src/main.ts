@@ -4,16 +4,15 @@ import { createCommand} from 'commander';
 
 const version = require("../package.json");
 
-function convertISODate(date?: string) {
+export function convertISODate(date?: string) {
     if (date === undefined) {
         return undefined;
     }
     const m1 = date.match(/^(\d\d\d\d)\/(\d+)\/(\d+)/);
     if (m1) {
-        console.log(date);
         return date.replace(/\//g, '-');
     }
-    const m2 = date.match(/^(\d\d\d\d)\/(\d+)\/(\d+)/);
+    const m2 = date.match(/^(\d\d\d\d)\-(\d+)\-(\d+)/);
     if (m2) {
         return date;
     }
