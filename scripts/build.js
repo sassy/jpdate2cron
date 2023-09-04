@@ -6,6 +6,5 @@ build({
   outdir: './lib', 
   platform: 'node', 
   external: [],
-  bundle: true,
-  watch: false 
+  bundle: true
 })
