@@ -1,8 +1,13 @@
-import 'moment/locale/ja';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
 import { createCommand} from 'commander';
 
 const version = require("../package.json");
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("Asia/Tokyo");
 
 export function convertISODate(date?: string) {
     if (date === undefined) {
@@ -25,7 +30,7 @@ function buildDayString(date?: string, time?: string): string {
     } else if (date) {
         return date;
     } else if (time) {
-        return `${moment().format('YYYY-MM-DD')} ${time}`;
+        return `${dayjs().format('YYYY-MM-DD')} ${time}`;
     } else {
         return "";
     }
@@ -33,11 +38,13 @@ function buildDayString(date?: string, time?: string): string {
 
 export function convertCron(date?: string, time?: string) : string {
     const dayString = buildDayString(date, time);
-    const utcString = moment(dayString).utc();
+    const utcString = dayjs(dayString).tz("utc");
     if (date && time) {
         return utcString.format('m H D M *');
     } else if (date) {
-        return utcString.format('* * D M *');
+        // add 1 day for transform error.
+        // Day is treated as 0:00 of the specified date, so day is 9 hours earlier than the previous day.
+        return utcString.add(1, 'd').format('* * D M *');
     } else if (time) {
         return utcString.format('m H * * *');
     } else {
