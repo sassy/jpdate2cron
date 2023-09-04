@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import 'dayjs/locale/ja'
 
 import { createCommand} from 'commander';
 
@@ -8,6 +9,7 @@ const version = require("../package.json");
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault("Asia/Tokyo");
+dayjs.locale('ja');
 
 export function convertISODate(date?: string) {
     if (date === undefined) {
