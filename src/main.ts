@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import 'dayjs/locale/ja'
 
 import { createCommand} from 'commander';
 
@@ -8,6 +9,7 @@ const version = require("../package.json");
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault("Asia/Tokyo");
+dayjs.locale('ja');
 
 export function convertISODate(date?: string) {
     if (date === undefined) {
@@ -30,7 +32,7 @@ function buildDayString(date?: string, time?: string): string {
     } else if (date) {
         return date;
     } else if (time) {
-        return `${dayjs().format('YYYY-MM-DD')} ${time}`;
+        return `${dayjs().tz("Asia/Tokyo", true).format('YYYY-MM-DD')} ${time}`;
     } else {
         return "";
     }
@@ -38,15 +40,15 @@ function buildDayString(date?: string, time?: string): string {
 
 export function convertCron(date?: string, time?: string) : string {
     const dayString = buildDayString(date, time);
-    const utcString = dayjs(dayString).tz("utc");
+    const dayjsObj = dayjs(dayString).tz("Asia/Tokyo", true);
     if (date && time) {
-        return utcString.format('m H D M *');
+        return dayjsObj.tz("utc").format('m H D M *');
     } else if (date) {
         // add 1 day for transform error.
         // Day is treated as 0:00 of the specified date, so day is 9 hours earlier than the previous day.
-        return utcString.add(1, 'd').format('* * D M *');
+        return dayjsObj.add(1, 'd').tz("utc").format('* * D M *');
     } else if (time) {
-        return utcString.format('m H * * *');
+        return dayjsObj.tz("utc").format('m H * * *');
     } else {
         return '* * * * *';
     } 
