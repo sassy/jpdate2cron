@@ -40,7 +40,7 @@ function buildDayString(date?: string, time?: string): string {
 
 export function convertCron(date?: string, time?: string) : string {
     const dayString = buildDayString(date, time);
-    const dayjsObj = dayjs(dayString);
+    const dayjsObj = dayjs(dayString).tz();
     if (date && time) {
         return dayjsObj.tz("utc").format('m H D M *');
     } else if (date) {
