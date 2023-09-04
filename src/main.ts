@@ -32,7 +32,7 @@ function buildDayString(date?: string, time?: string): string {
     } else if (date) {
         return date;
     } else if (time) {
-        return `${dayjs().tz().format('YYYY-MM-DD')} ${time}`;
+        return `${dayjs().tz("Asia/Tokyo", true).format('YYYY-MM-DD')} ${time}`;
     } else {
         return "";
     }
@@ -40,7 +40,7 @@ function buildDayString(date?: string, time?: string): string {
 
 export function convertCron(date?: string, time?: string) : string {
     const dayString = buildDayString(date, time);
-    const dayjsObj = dayjs(dayString).tz();
+    const dayjsObj = dayjs(dayString).tz("Asia/Tokyo", true);
     if (date && time) {
         return dayjsObj.tz("utc").format('m H D M *');
     } else if (date) {
